@@ -28,6 +28,7 @@ resource "aws_db_subnet_group" "db_subnet_group" {
 # IAM para Lambdas
 data "aws_iam_policy_document" "lambda_assume" {
   statement {
+    effect = "Allow"
     actions = ["sts:AssumeRole"]
     principals {
       type        = "service"
@@ -48,6 +49,7 @@ resource "aws_iam_role_policy_attachment" "lambda_basic" {
 
 data "aws_iam_policy_document" "lambda_app" {
   statement {
+    effect = "Allow"
     actions = [
       "rds-db:connect",
       "secretsmanager:GetSecretValue",
