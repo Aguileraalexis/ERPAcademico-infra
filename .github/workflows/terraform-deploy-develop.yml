@@ -1,9 +1,10 @@
-name: Deploy infra + lambdas (develop)
+name: Deploy infra (develop)
 
 on:
   push:
     branches:
-      - develop
+      - master
+  workflow_dispatch: 
 
 jobs:
   build-and-deploy:
