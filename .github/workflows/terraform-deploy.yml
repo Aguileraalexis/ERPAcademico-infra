@@ -12,12 +12,7 @@ env:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: ${{
-      github.ref_name == 'master' && 'dev' ||
-      startsWith(github.ref_name, 'prerelease-') && 'qa' ||
-      startsWith(github.ref_name, 'release-') && 'prod' ||
-      'dev'
-    }}
+    environment: ${{ github.ref_name == 'master' && 'dev' || startsWith(github.ref_name, 'prerelease-') && 'qa' || startsWith(github.ref_name, 'release-') && 'prod' || 'dev' }}
 
     steps:
       - name: Checkout
