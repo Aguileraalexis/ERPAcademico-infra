@@ -10,7 +10,6 @@ override.tf.json
 .terragrunt-cache/
 .idea/
 .vscode/
-*.zip
 .DS_Store
 .terraformrc
 .terragruntrc
