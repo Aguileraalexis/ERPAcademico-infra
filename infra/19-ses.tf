@@ -15,15 +15,6 @@ resource "aws_route53_record" "ses_verification" {
   records = [aws_ses_domain_identity.ses_domain_id.verification_token]
 }
 
-# Output para DNS externo (si NO usas Route53)
-output "ses_verification_record" {
-  value = {
-    type  = "TXT"
-    name  = "_amazonses.${var.domain}"
-    value = aws_ses_domain_identity.ses_domain_id.verification_token
-  }
-}
-
 ############################
 # 2) SES: DKIM
 ############################
@@ -39,17 +30,6 @@ resource "aws_route53_record" "ses_dkim" {
   type    = "CNAME"
   ttl     = 600
   records = ["${aws_ses_domain_dkim.ses_domain_dkim.dkim_tokens[count.index]}.dkim.amazonses.com"]
-}
-
-# Output para DNS externo (si NO usas Route53)
-output "ses_dkim_records" {
-  value = [
-    for t in aws_ses_domain_dkim.ses_domain_dkim.dkim_tokens : {
-      type  = "CNAME"
-      name  = "${t}._domainkey.${var.domain}"
-      value = "${t}.dkim.amazonses.com"
-    }
-  ]
 }
 
 ############################
