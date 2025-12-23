@@ -6,17 +6,12 @@ on:
       - master
   workflow_dispatch: 
 
+env:
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
-    env:
-      AWS_REGION: us-east-1
-      COGNITO_ADMIN_EMAIL: ${{ secrets.COGNITO_ADMIN_EMAIL }}
-      SYSTEM_BASE_URL: ${{ secrets.SYSTEM_BASE_URL }}
-      SMTP_FROM_EMAIL: ${{ secrets.SMTP_FROM_EMAIL }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      TF_VAR_aws_region: ${{ env.AWS_REGION }}
 
     steps:
       - name: Checkout
@@ -39,9 +34,5 @@ jobs:
       - name: Terraform apply
         working-directory: infra
         env:
-          TF_VAR_aws_region: ${{ env.aws_region }}
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-          TF_VAR_cognito_admin_email: ${{ env.COGNITO_ADMIN_EMAIL }}
-          TF_VAR_system_base_url: ${{ env.SYSTEM_BASE_URL }}
-          TF_VAR_smtp_from_email: ${{ env.SMTP_FROM_EMAIL }}
         run: terraform apply -auto-approve
