@@ -8,6 +8,8 @@ on:
 
 env:
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
 
 jobs:
   build-and-deploy:
