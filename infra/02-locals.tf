@@ -1,3 +1,15 @@
+data "aws_subnets" "vpc_subnets" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
+
+data "aws_subnet" "details" {
+  for_each = toset(data.aws_subnets.vpc_subnets.ids)
+  id       = each.value
+}
+
 locals {
   name_prefix    = var.project_name
   const_entity_proceso_admision = "proceso_admision"  
@@ -19,5 +31,12 @@ locals {
   const_q_cert_preinscripcion = "q-cert-preinscripcion"
   const_q_cert_matricula = "q-cert-matricula"
   const_q_resumen_matricula = "q-resumen-matricula"
+
+  subnet_ids = [
+    for s in values(data.aws_subnet.details) : s.id
+    if s.availability_zone_id != "use1-az3"
+  ]
+
+  bootstrap_zip = "${path.module}/bootstrap.zip"
 }
 

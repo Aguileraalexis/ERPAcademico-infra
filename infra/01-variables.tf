@@ -20,12 +20,17 @@ variable "db_password" {
 
 variable "cognito_admin_email" {
   type = string
-  default = "admin@erp-academico.com"
+  default = "aguileraalexis@yahoo.com"
+}
+
+variable "cognito_admin_username" {
+  type = string
+  default = "administrador"
 }
 
 variable "system_base_url" {
   type = string
-  default = "https://erp-academico.com"
+  default = "https://smart-sai.com"
 }
 
 variable "smtp_from_email" {
@@ -40,7 +45,76 @@ variable "lambdas_path" {
 
 variable "lambda_artifacts_bucket" {
   type = string
-  default = "erp-academico-lambda-artifacts"
+  default = "erp-academico-lambdas"
 }
 
- 
+############################
+# variables para el contenedor
+############################
+
+# pasar esta en el pipeline luego de construir la imagen docker
+variable "ecr_image" {
+  type = string
+  default = "public.ecr.aws/docker/library/nginx:latest"
+}
+
+variable "container_port" { 
+  type = number
+  default = 8080 
+}
+
+variable "desired_count"  { 
+  type = number
+  default = 1 
+}
+
+variable "ecs_cpu" { 
+  type = number
+  default = 512 
+}
+
+variable "ecs_memory" { 
+  type = number
+  default = 1024 
+}
+
+# pasar en el pipeline por ahora con dev.
+variable "spring_env" {
+  type    = map(string)
+  default = {
+    SPRING_PROFILES_ACTIVE = "prod"
+  }
+}
+
+############
+# para emails
+############
+
+variable "use_route53" {
+  type        = bool
+  default     = false
+  description = "true si tu DNS está en Route53 y quieres que TF cree los records"
+}
+
+variable "route53_zone_id" {
+  type        = string
+  default     = ""
+  description = "Hosted Zone ID (solo si use_route53=true)"
+}
+
+variable "domain" {
+  type        = string
+  default        = "sai.sigroup.net.pe"
+  description = "Dominio a verificar en SES"
+}
+
+variable "from_address" {
+  type        = string
+  default        = "sistema@sai.sigroup.net.pe"
+  description = "From: que usarás (ej: sistema@sai.sigroup.net.pe)"
+}
+
+variable "ses_template_prefix" {
+  type    = string
+  default = "ses_template_v1"
+}

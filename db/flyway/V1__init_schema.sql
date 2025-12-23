@@ -47,7 +47,7 @@ CREATE TABLE estudiante (
         FOREIGN KEY (id_persona) REFERENCES persona(id)
 );
 
-CREATE TABLE admision_estudiante (
+CREATE TABLE proceso_admision_estudiante (
     id                  CHAR(36)   NOT NULL PRIMARY KEY,
     id_estudiante       CHAR(36)   NOT NULL,
     id_proceso_admision CHAR(36)   NOT NULL,
@@ -59,23 +59,25 @@ CREATE TABLE admision_estudiante (
         FOREIGN KEY (id_proceso_admision) REFERENCES proceso_admision(id)
 );
 
-CREATE TABLE examen_admision (
+CREATE TABLE proceso_admision_examen (
     id                   CHAR(36)  NOT NULL PRIMARY KEY,
     id_proceso_admision  CHAR(36)  NOT NULL,
     fecha                DATE      NOT NULL,
     borrador             TINYINT(1) NOT NULL DEFAULT 1,
-    CONSTRAINT fk_examen_proceso
+    CONSTRAINT fk_proceso_admision_examen
         FOREIGN KEY (id_proceso_admision) REFERENCES proceso_admision(id)
 );
 
-CREATE TABLE examen_admision_estudiante (
+CREATE TABLE proceso_admision_examen_estudiante (
     id                  CHAR(36)  NOT NULL PRIMARY KEY,
     id_estudiante       CHAR(36)  NOT NULL,
-    id_examen_admision  CHAR(36)  NOT NULL,
+    id_proceso_admision_examen  CHAR(36)  NOT NULL,
     estado              CHAR(2)   NOT NULL COMMENT 'PE=Pendiente, RP=Aprobado, DS=Reprobado, DC=Descartado',
+    resultado              int   NULL,
+    valoracion              int   NULL,
     CONSTRAINT chk_estado_examen CHECK (estado IN ('PE','RP','DS','DC')),
     CONSTRAINT fk_examen_estudiante
         FOREIGN KEY (id_estudiante) REFERENCES estudiante(id),
     CONSTRAINT fk_examen_admision
-        FOREIGN KEY (id_examen_admision) REFERENCES examen_admision(id)
+        FOREIGN KEY (id_proceso_admision_examen) REFERENCES proceso_admision_examen(id)
 );

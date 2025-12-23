@@ -1,0 +1,3 @@
+Certificado de Matricula
+Estimado(a) {{name}}, hemos generado su certificado de matricula. Puede acederlo por medio del siguiente enlace:
+{{link}}

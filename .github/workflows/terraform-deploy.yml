@@ -12,6 +12,11 @@ jobs:
 
     env:
       AWS_REGION: us-east-1
+      COGNITO_ADMIN_EMAIL: ${{ secrets.COGNITO_ADMIN_EMAIL }}
+      SYSTEM_BASE_URL: ${{ secrets.SYSTEM_BASE_URL }}
+      SMTP_FROM_EMAIL: ${{ secrets.SMTP_FROM_EMAIL }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      TF_VAR_aws_region: ${{ env.AWS_REGION }}
 
     steps:
       - name: Checkout
@@ -27,21 +32,6 @@ jobs:
         with:
           terraform_version: "1.9.0"
 
-      - name: Build lambdas
-        run: |
-          mkdir -p artifacts
-          for dir in lambdas/*; do
-            if [ -d "$dir" ] && [ -f "$dir/package.json" ]; then
-              echo "Building $dir"
-              cd "$dir"
-              npm install
-              npm run build
-              cd - >/dev/null
-              name=$(basename "$dir")
-              zip -r "artifacts/${name}.zip" "$dir/dist" "lambdas/common" -x "**/node_modules/*"
-            fi
-          done
-
       - name: Terraform init
         working-directory: infra
         run: terraform init
@@ -49,9 +39,9 @@ jobs:
       - name: Terraform apply
         working-directory: infra
         env:
-          TF_VAR_aws_region: ${{ env.AWS_REGION }}
+          TF_VAR_aws_region: ${{ env.aws_region }}
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-          TF_VAR_cognito_admin_email: ${{ secrets.COGNITO_ADMIN_EMAIL }}
-          TF_VAR_system_base_url: ${{ secrets.SYSTEM_BASE_URL }}
-          TF_VAR_smtp_from_email: ${{ secrets.SMTP_FROM_EMAIL }}
+          TF_VAR_cognito_admin_email: ${{ env.COGNITO_ADMIN_EMAIL }}
+          TF_VAR_system_base_url: ${{ env.SYSTEM_BASE_URL }}
+          TF_VAR_smtp_from_email: ${{ env.SMTP_FROM_EMAIL }}
         run: terraform apply -auto-approve

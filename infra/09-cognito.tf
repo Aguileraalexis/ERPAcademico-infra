@@ -36,7 +36,7 @@ resource "aws_cognito_user_group" "erp_admin_group" {
 
 resource "aws_cognito_user" "admin_user" {
   user_pool_id = aws_cognito_user_pool.erp.id
-  username     = var.cognito_admin_email
+  username     = var.cognito_admin_username
 
   attributes = {
     email          = var.cognito_admin_email

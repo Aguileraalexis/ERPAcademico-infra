@@ -1,0 +1,2 @@
+Registro en el sistema de {{institucion}}
+Estimado(a) {{name}}, gracias por registrarse en nuestro sistema
