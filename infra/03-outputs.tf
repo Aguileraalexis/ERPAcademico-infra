@@ -33,6 +33,26 @@ output "ses_dkim_records" {
   ]
 }
 
+output "ecr_repository_name" {
+  value = aws_ecr_repository.app.name
+}
+
+output "ecs_cluster_name" {
+  value = aws_ecs_cluster.app.name
+}
+
+output "ecs_service_name" {
+  value = aws_ecs_service.app.name
+}
+
+output "ecs_task_family" {
+  value = aws_ecs_task_definition.app.family
+}
+
+output "ecs_container_name" {
+  value = "app"
+}
+
 #output "route53_zone_id" {
 #  value       = aws_route53_zone.aws_route53.zone_id
 #  description = "Zone ID para usar en SES, ACM, etc."
