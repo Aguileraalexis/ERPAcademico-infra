@@ -16,7 +16,7 @@ resource "aws_ecs_task_definition" "app" {
 
   container_definitions = jsonencode([
     {
-      name      = "app"
+      name      = "erp-academico-beckend"
       image     = var.ecr_image
       essential = true
       portMappings = [{
@@ -31,7 +31,7 @@ resource "aws_ecs_task_definition" "app" {
         options = {
           awslogs-group         = aws_cloudwatch_log_group.ecs.name
           awslogs-region        = var.aws_region
-          awslogs-stream-prefix = "app"
+          awslogs-stream-prefix = "erp-academico-beckend"
         }
       }
     }
