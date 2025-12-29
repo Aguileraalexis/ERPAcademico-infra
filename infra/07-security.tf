@@ -162,6 +162,30 @@ resource "aws_iam_role_policy_attachment" "ecs_exec_attach" {
   policy_arn  = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+data "aws_iam_policy_document" "ecs_exec_secrets" {
+  statement {
+    actions = [
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret"
+    ]
+    resources = [
+      aws_secretsmanager_secret.db_credentials.arn,
+      aws_secretsmanager_secret.system_config.arn
+    ]
+  }
+}
+
+resource "aws_iam_policy" "ecs_exec_secrets" {
+  name   = "${local.name_prefix}-ecs-exec-secrets"
+  policy = data.aws_iam_policy_document.ecs_exec_secrets.json
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_exec_secrets_attach" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.ecs_exec_secrets.arn
+}
+
+
 # Role “task” (para AWS SDK desde la app). Deja vacío si no lo necesitas.
 resource "aws_iam_role" "ecs_task_role" {
   name               = "${local.name_prefix}-ecs-task-role"
