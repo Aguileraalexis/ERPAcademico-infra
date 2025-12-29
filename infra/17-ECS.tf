@@ -19,13 +19,31 @@ resource "aws_ecs_task_definition" "app" {
       name      = "erp-academico-beckend"
       image     = var.ecr_image
       essential = true
+
+      secrets = [
+        {
+          name      = "SPRING_DATASOURCE_USERNAME"
+          valueFrom = "${aws_secretsmanager_secret.db_credentials.arn}:username::"
+        },
+        {
+          name      = "SPRING_DATASOURCE_PASSWORD"
+          valueFrom = "${aws_secretsmanager_secret.db_credentials.arn}:password::"
+        },
+        {
+          name      = "APP_SYSTEM_BASE_URL"
+          valueFrom = "${aws_secretsmanager_secret.system_config.arn}:system_base_url::"
+        }
+      ]
+
       portMappings = [{
         containerPort = var.container_port
         protocol      = "tcp"
       }]
+
       environment = [
         for k, v in var.spring_env : { name = k, value = v }
       ]
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {
