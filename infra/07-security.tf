@@ -153,36 +153,35 @@ data "aws_iam_policy_document" "ecs_task_assume" {
 }
 
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name               = "${local.name_prefix}-ecs-task-exec"
+  name = "${local.name_prefix}-ecs-task-exec"
   assume_role_policy = data.aws_iam_policy_document.ecs_task_assume.json
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_exec_attach" {
-  role       = aws_iam_role.ecs_task_execution_role.name
-  policy_arn  = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  role = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-data "aws_iam_policy_document" "ecs_exec_secrets" {
-  statement {
-    actions = [
-      "secretsmanager:GetSecretValue",
-      "secretsmanager:DescribeSecret"
+resource "aws_iam_role_policy" "ecs_exec_secrets_inline" {
+  name = "${local.name_prefix}-ecs-exec-secrets"
+  role = aws_iam_role.ecs_task_execution_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ],
+        Resource = [
+          aws_secretsmanager_secret.db_credentials.arn,
+          aws_secretsmanager_secret.system_config.arn
+        ]
+      }
     ]
-    resources = [
-      aws_secretsmanager_secret.db_credentials.arn,
-      aws_secretsmanager_secret.system_config.arn
-    ]
-  }
-}
-
-resource "aws_iam_policy" "ecs_exec_secrets" {
-  name   = "${local.name_prefix}-ecs-exec-secrets"
-  policy = data.aws_iam_policy_document.ecs_exec_secrets.json
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_exec_secrets_attach" {
-  role       = aws_iam_role.ecs_task_execution_role.name
-  policy_arn = aws_iam_policy.ecs_exec_secrets.arn
+  })
 }
 
 
