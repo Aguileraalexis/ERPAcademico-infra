@@ -16,6 +16,7 @@ env:
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
   AWS_REGION: ${{ vars.AWS_REGION }}
   AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
+  TF_VAR_SPRING_ENV: ${{ vars.TF_VAR_SPRING_ENV }}
 
 jobs:
   build-and-deploy:
@@ -54,4 +55,5 @@ jobs:
         working-directory: infra
         env:
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+          TF_VAR_SPRING_ENV: ${{ vars.TF_VAR_SPRING_ENV }}
         run: terraform apply -auto-approve
