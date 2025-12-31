@@ -53,11 +53,6 @@ variable "lambda_artifacts_bucket" {
 ############################
 
 # pasar esta en el pipeline luego de construir la imagen docker
-variable "ecr_image" {
-  type = string
-  default = "public.ecr.aws/docker/library/nginx:latest"
-}
-
 variable "container_port" { 
   type = number
   default = 8080 
