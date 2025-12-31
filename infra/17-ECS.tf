@@ -30,10 +30,6 @@ resource "aws_ecs_task_definition" "app" {
           valueFrom = "${aws_secretsmanager_secret.db_credentials.arn}:password::"
         },
         {
-          name      = "SPRING_DATASOURCE_URL"
-          valueFrom = "jdbc:mysql://${aws_db_instance.mysql.address}:3306/${aws_db_instance.mysql.db_name}?zeroDateTimeBehavior=CONVERT_TO_NULL"
-        },
-        {
           name      = "APP_SYSTEM_BASE_URL"
           valueFrom = "${aws_secretsmanager_secret.system_config.arn}:system_base_url::"
         }
@@ -44,9 +40,15 @@ resource "aws_ecs_task_definition" "app" {
         protocol      = "tcp"
       }]
 
-      environment = [
-        for k, v in var.spring_env : { name = k, value = v }
-      ]
+      environment = concat(
+        [
+          {
+            name  = "SPRING_DATASOURCE_URL"
+            value = "jdbc:mysql://${aws_db_instance.mysql.address}:3306/${aws_db_instance.mysql.db_name}?zeroDateTimeBehavior=CONVERT_TO_NULL"
+          }
+        ],
+        [for k, v in var.spring_env : { name = k, value = v }]
+      )
 
       logConfiguration = {
         logDriver = "awslogs"
