@@ -8,6 +8,7 @@ resource "aws_secretsmanager_secret_version" "db_credentials_v" {
   secret_string = jsonencode({
     username = var.db_username
     password = var.db_password
+    url = "jdbc:mysql://${aws_db_instance.mysql.address}:3306/${aws_db_instance.mysql.db_name}?zeroDateTimeBehavior=CONVERT_TO_NULL"
   })
 }
 

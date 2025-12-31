@@ -16,7 +16,7 @@ resource "aws_ecs_task_definition" "app" {
 
   container_definitions = jsonencode([
     {
-      name      = "erp-academico-beckend"
+      name      = "erp-academico-backend"
       image     = var.ecr_image
       essential = true
 
@@ -28,6 +28,10 @@ resource "aws_ecs_task_definition" "app" {
         {
           name      = "SPRING_DATASOURCE_PASSWORD"
           valueFrom = "${aws_secretsmanager_secret.db_credentials.arn}:password::"
+        },
+        {
+          name      = "SPRING_DATASOURCE_URL"
+          valueFrom = "jdbc:mysql://${aws_db_instance.mysql.address}:3306/${aws_db_instance.mysql.db_name}?zeroDateTimeBehavior=CONVERT_TO_NULL"
         },
         {
           name      = "APP_SYSTEM_BASE_URL"
