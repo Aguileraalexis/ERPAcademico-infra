@@ -55,7 +55,7 @@ resource "aws_ecs_task_definition" "app" {
         options = {
           awslogs-group         = aws_cloudwatch_log_group.ecs.name
           awslogs-region        = var.aws_region
-          awslogs-stream-prefix = "erp-academico-beckend"
+          awslogs-stream-prefix = "erp-academico-backend"
         }
       }
     }
@@ -77,7 +77,7 @@ resource "aws_ecs_service" "app" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.app.arn
-    container_name   = "erp-academico-beckend"
+    container_name   = "erp-academico-backend"
     container_port   = var.container_port
   }
 
